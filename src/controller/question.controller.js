@@ -30,6 +30,19 @@ const getOneFAQ = asyncHandler(async (req, res) => {
     return res.status(200).json(new APIResponse(200, { _id: id, ...translatedFAQ }, ""));
   });
   
+  const createFAQ = asyncHandler(async (req, res) => {
+    const { question, answer } = req.body;
+    if (!question || !answer) {
+      throw new APIError(400, "Question and Answer are required");
+    }
+  
+    const newFAQ = new FAQ({ question, answer });
+    await newFAQ.save();
+  
+    return res.status(201).json(new APIResponse(200, newFAQ, "FAQ successfully created"));
+  });
+  
 
 
-export { getQuestion , getOneFAQ };
+
+export { getQuestion , getOneFAQ , createFAQ };
