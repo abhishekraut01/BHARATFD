@@ -15,12 +15,11 @@ app.use(express.json({ limit: '16kb' }));
 app.use(express.urlencoded({ extended: true }));
 
 // route imports
-import FAQRouter from "./routes/faq.routes";
+import FAQRouter from './routes/faq.routes';
 
 // route declaration
-app.use("/api/v1/faqs", FAQRouter);
+app.use('/api/v1/faqs', FAQRouter);
 
-
-app.use(globalErrorHandler)
+app.use(globalErrorHandler);
 
 export default app;

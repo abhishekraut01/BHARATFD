@@ -1,7 +1,7 @@
-import mongoose from "mongoose";
-import translate from "google-translate-api-x"; 
-import { languages } from "../utils/languages.js"; 
-import { ParseDOM } from "../utils/parseDOM.js"; 
+import mongoose from 'mongoose';
+import translate from 'google-translate-api-x';
+import { languages } from '../utils/languages.js';
+import { ParseDOM } from '../utils/parseDOM.js';
 
 const faqSchema = new mongoose.Schema(
   {
@@ -19,9 +19,8 @@ const faqSchema = new mongoose.Schema(
       bn: { question: String, answer: String },
     },
   },
-  { timestamps: true } 
+  { timestamps: true }
 );
-
 
 const translateText = async (text, lang) => {
   try {
@@ -29,12 +28,12 @@ const translateText = async (text, lang) => {
     return response.text;
   } catch (error) {
     console.error(`Error while translating to ${lang}:`, error);
-    return text; 
+    return text;
   }
 };
 
-faqSchema.pre("save", async function (next) {
-  if (this.isModified("question")) {
+faqSchema.pre('save', async function (next) {
+  if (this.isModified('question')) {
     const translationPromises = languages.map(async (lang) => {
       const translatedQuestion = await translateText(this.question, lang);
       return { lang, text: translatedQuestion };
@@ -46,15 +45,14 @@ faqSchema.pre("save", async function (next) {
     });
   }
 
-  if (this.isModified("answer")) {
+  if (this.isModified('answer')) {
     await ParseDOM(this);
   }
 
   next();
 });
 
-
-faqSchema.pre("findOneAndUpdate", async function (next) {
+faqSchema.pre('findOneAndUpdate', async function (next) {
   const update = this.getUpdate();
 
   if (update.question) {
@@ -76,9 +74,10 @@ faqSchema.pre("findOneAndUpdate", async function (next) {
   next();
 });
 
-
 faqSchema.methods.getTranslation = function (lang) {
-  return this.translations[lang] || { question: this.question, answer: this.answer };
+  return (
+    this.translations[lang] || { question: this.question, answer: this.answer }
+  );
 };
 
-export const FAQ = mongoose.model("FAQ", faqSchema);
+export const FAQ = mongoose.model('FAQ', faqSchema);

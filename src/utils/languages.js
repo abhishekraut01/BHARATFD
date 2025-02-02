@@ -1,5 +1,1 @@
-export const languages = [
-    "hi", 
-    "bn", 
-];
-  
+export const languages = ['hi', 'bn'];
