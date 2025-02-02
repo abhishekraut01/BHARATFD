@@ -17,6 +17,19 @@ const getQuestion = asyncHandler(async (req, res) => {
   return res.status(200).json(new APIResponse(200, faqs, ""));
 });
 
+const getOneFAQ = asyncHandler(async (req, res) => {
+    const { id } = req.params;
+    const lang = req.query.lang || "en";
+  
+    const response = await FAQ.findById(id);
+    if (!response) {
+      throw new APIError(404, "FAQ not found");
+    }
+  
+    const translatedFAQ = lang !== "en" ? response.getTranslation(lang) : { question: response.question, answer: response.answer };
+    return res.status(200).json(new APIResponse(200, { _id: id, ...translatedFAQ }, ""));
+  });
+  
 
 
-export { getQuestion };
+export { getQuestion , getOneFAQ };
