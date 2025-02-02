@@ -55,23 +55,27 @@ faqSchema.pre('save', async function (next) {
 faqSchema.pre('findOneAndUpdate', async function (next) {
   const update = this.getUpdate();
 
-  if (update.question) {
-    const translationPromises = languages.map(async (lang) => {
-      const translatedQuestion = await translateText(update.question, lang);
-      return { lang, text: translatedQuestion };
-    });
-    const translations = await Promise.all(translationPromises);
-    translations.forEach(({ lang, text }) => {
-      update[`translations.${lang}.question`] = text;
-    });
-  }
+  try {
+    if (update.question) {
+      const translationPromises = languages.map(async (lang) => {
+        const translatedQuestion = await translateText(update.question, lang);
+        return { lang, text: translatedQuestion };
+      });
+      const translations = await Promise.all(translationPromises);
+      translations.forEach(({ lang, text }) => {
+        update[`translations.${lang}.question`] = text;
+      });
+    }
 
-  if (update.answer) {
-    await ParseDOM(update);
-  }
+    if (update.answer) {
+      await ParseDOM(update);
+    }
 
-  this.setUpdate(update);
-  next();
+    this.setUpdate(update);
+    next();
+  } catch (error) {
+    next(error);  // Pass the error to the next middleware
+  }
 });
 
 faqSchema.methods.getTranslation = function (lang) {
