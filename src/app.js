@@ -11,10 +11,14 @@ app.use(
   })
 );
 
-app.use(cookieParser());
 app.use(express.json({ limit: '16kb' }));
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static('public'));
+
+// route imports
+import FAQRouter from "./routes/faq.routes";
+
+// route declaration
+app.use("/api/v1/faqs", FAQRouter);
 
 
 app.use(globalErrorHandler)

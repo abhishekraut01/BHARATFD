@@ -1,16 +1,15 @@
+import { APIResponse } from "../utils/ApiResponse";
+
 const globalErrorHandler = (err, _, res, next) => {
-    console.error(err); 
-  
+    if (err instanceof APIError) {
+        const response = new APIResponse(err.statusCode, null, err.message);
+        return res.status(err.statusCode).json(response);
+      }
     
-    const statusCode = err.statusCode || 500;
-    const message = err.message || 'Internal server error';
-    const errors = err.errors || [];
+      console.error("Unexpected Error:", err);
     
-    return res.status(statusCode).json({
-      success: false,
-      message,
-      errors,
-    });
+      const response = new APIResponse(500, null, "Internal Server Error");
+      return res.status(500).json(response);
   };
   
   export default globalErrorHandler;
