@@ -1,4 +1,4 @@
-import { APIResponse } from '../utils/ApiResponse';
+import { APIResponse } from '../utils/ApiResponse.js';
 
 const globalErrorHandler = (err, _, res, next) => {
   if (err instanceof APIError) {

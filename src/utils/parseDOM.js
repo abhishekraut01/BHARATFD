@@ -1,6 +1,6 @@
 import { JSDOM } from 'jsdom';
 import { translate } from 'google-translate-api-x';
-import { languages } from './languages';
+import { languages } from './languages.js';
 
 const getTextNodes = (node) => {
   const textNodes = [];

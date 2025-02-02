@@ -1,7 +1,7 @@
-import { asyncHandler } from '../utils/AsyncHandler.js';
+import asyncHandler from '../utils/AsyncHandler.js'
 import { APIResponse } from '../utils/ApiResponse.js';
 import { APIError } from '../utils/ApiError.js';
-import { FAQ } from '../models/faq.js';
+import { FAQ } from '../model/faq.model.js';
 import { languages } from '../utils/languages.js';
 
 const getQuestion = asyncHandler(async (req, res) => {

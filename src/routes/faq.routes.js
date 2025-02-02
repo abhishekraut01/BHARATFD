@@ -5,7 +5,7 @@ import {
   createFAQ,
   updateFAQ,
   deleteFAQ,
-} from '../controllers/question.js';
+} from '../controller/question.controller.js';
 
 const router = Router();
 
