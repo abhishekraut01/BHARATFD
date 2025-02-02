@@ -42,7 +42,21 @@ const getOneFAQ = asyncHandler(async (req, res) => {
     return res.status(201).json(new APIResponse(200, newFAQ, "FAQ successfully created"));
   });
   
+  const updateFAQ = asyncHandler(async (req, res) => {
+    const { id, update } = req.body;
+    if (!id || !update) {
+      throw new APIError(400, "FAQ ID and update data are required");
+    }
+  
+    const response = await FAQ.findByIdAndUpdate(id, update, { new: true });
+    if (!response) {
+      throw new APIError(404, "FAQ not found");
+    }
+  
+    return res.status(200).json(new APIResponse(200, response, "FAQ successfully updated"));
+  });
+  
 
 
 
-export { getQuestion , getOneFAQ , createFAQ };
+export { getQuestion , getOneFAQ , createFAQ , updateFAQ };
