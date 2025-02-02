@@ -1,3 +1,4 @@
+import { APIError } from '../utils/ApiError.js';
 import { APIResponse } from '../utils/ApiResponse.js';
 
 const globalErrorHandler = (err, _, res, next) => {

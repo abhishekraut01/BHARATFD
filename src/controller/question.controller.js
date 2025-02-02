@@ -1,8 +1,9 @@
-import asyncHandler from '../utils/AsyncHandler.js'
+import asyncHandler from '../utils/AsyncHandler.js';
 import { APIResponse } from '../utils/ApiResponse.js';
 import { APIError } from '../utils/ApiError.js';
 import { FAQ } from '../model/faq.model.js';
 import { languages } from '../utils/languages.js';
+import mongoose from 'mongoose';
 
 const getQuestion = asyncHandler(async (req, res) => {
   const lang =
@@ -25,21 +26,32 @@ const getQuestion = asyncHandler(async (req, res) => {
 
 const getOneFAQ = asyncHandler(async (req, res) => {
   const { id } = req.params;
-  const lang = req.query.lang || 'en';
+  const cleanId = id.replace(/^:/, ''); 
+  
+  // Validate ObjectId
+  if (!cleanId || !mongoose.Types.ObjectId.isValid(cleanId)) {
+    console.error("Invalid ObjectId:", cleanId);
+    throw new APIError(400, "Invalid ObjectId format");
+  }
 
-  const response = await FAQ.findById(id);
+  console.log("Valid ObjectId:", cleanId);
+
+  const lang = req.query.lang || "en";
+
+  // No need to convert ObjectId manually
+  const response = await FAQ.findById(cleanId);
   if (!response) {
-    throw new APIError(404, 'FAQ not found');
+    throw new APIError(404, "FAQ not found");
   }
 
   const translatedFAQ =
-    lang !== 'en'
+    lang !== "en"
       ? response.getTranslation(lang)
       : { question: response.question, answer: response.answer };
-  return res
-    .status(200)
-    .json(new APIResponse(200, { _id: id, ...translatedFAQ }, ''));
+
+  return res.status(200).json(new APIResponse(200, { _id: cleanId, ...translatedFAQ }, ""));
 });
+
 
 const createFAQ = asyncHandler(async (req, res) => {
   const { question, answer } = req.body;
