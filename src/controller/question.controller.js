@@ -56,7 +56,19 @@ const getOneFAQ = asyncHandler(async (req, res) => {
     return res.status(200).json(new APIResponse(200, response, "FAQ successfully updated"));
   });
   
+  const deleteFAQ = asyncHandler(async (req, res) => {
+    const { id } = req.body;
+    if (!id) {
+      throw new APIError(400, "FAQ ID is required");
+    }
+  
+    const response = await FAQ.deleteOne({ _id: id });
+    if (response.deletedCount === 0) {
+      throw new APIError(404, "FAQ not found");
+    }
+  
+    return res.status(200).json(new APIResponse(200, true, "FAQ successfully deleted"));
+  });
 
 
-
-export { getQuestion , getOneFAQ , createFAQ , updateFAQ };
+export { getQuestion , getOneFAQ , createFAQ , updateFAQ , deleteFAQ };
